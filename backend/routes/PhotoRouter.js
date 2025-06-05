@@ -139,4 +139,41 @@ router.post("/photos/new", upload.single("file"), async (req, res) => {
   }
 });
 
+// api sửa bình luận
+router.put("/comments/:photo_id/:comment_id", async (req, res) => {
+  const { photo_id, comment_id } = req.params;
+  const { comment } = req.body;
+  console.log("comment: ", comment);
+  if (!comment || typeof comment !== "string") {
+    return res.status(400).send("Invalid comment content.");
+  }
+
+  try {
+    const photo = await Photo.findOne({ _id: photo_id });
+    if (!photo) {
+      return res.status(404).send(`Photo with ID ${photo_id} not found.`);
+    }
+
+    const targetComment = photo.comments.id(comment_id);
+    if (!targetComment) {
+      return res.status(404).send(`Comment with ID ${comment_id} not found.`);
+    }
+
+    targetComment.comment = comment;
+    await photo.save();
+
+    res.status(200).json({
+      message: "Comment updated successfully.",
+      updatedComment: targetComment,
+    });
+  } catch (err) {
+    if (err.name === "CastError") {
+      res.status(400).send("Invalid ID format. Please provide valid IDs.");
+    } else {
+      console.error(err);
+      res.status(500).send("An unexpected error occurred.");
+    }
+  }
+});
+
 module.exports = router;

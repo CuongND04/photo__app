@@ -3,24 +3,57 @@ import { Link } from "react-router-dom";
 import formatDate from "../../utils/formatDate";
 import fetchModel from "../../lib/fetchModelData";
 import imageMap from "../../utils/imageMap";
-import { Avatar } from "@mui/material";
+import { Avatar, Button, TextField } from "@mui/material";
 import "./styles.css";
 import CommentInput from "../CommentInput";
+import { useAuth } from "../../contexts/AuthContext";
 
 const PhotoCard = ({ photo, userId, toggle, setToggle }) => {
+  const { user } = useAuth();
   const [userDetail, setUserDetail] = useState({});
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editText, setEditText] = useState("");
 
   useEffect(() => {
     fetchModel(`/api/user/${userId}`)
       .then((res) => setUserDetail(res[0]))
       .catch(() => {});
   }, [userId]);
-  // console.log("userDetail : ", userDetail);
+
+  const handleEditComment = (commentId, originalText) => {
+    setEditingCommentId(commentId);
+    setEditText(originalText);
+  };
+
+  const handleSaveComment = async (photoId, commentId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8081/api/comments/${photoId}/${commentId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ comment: editText }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update comment");
+      }
+
+      setEditingCommentId(null);
+      setToggle(!toggle);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="photo-card">
       <div className="photo-image-container">
         <img
-          // src={imageMap[photo.file_name]}
           src={`http://localhost:8081/images/${photo.file_name}`}
           alt={photo.file_name}
           className="photo-image"
@@ -72,10 +105,45 @@ const PhotoCard = ({ photo, userId, toggle, setToggle }) => {
                       {formatDate(comment.date_time)}
                     </span>
                   </div>
-                  <p
-                    className="comment-text"
-                    dangerouslySetInnerHTML={{ __html: comment.comment }}
-                  />
+
+                  {editingCommentId === comment._id ? (
+                    <>
+                      <TextField
+                        value={editText}
+                        onChange={(e) => setEditText(e.target.value)}
+                        fullWidth
+                        size="small"
+                      />
+                      <Button
+                        onClick={() =>
+                          handleSaveComment(photo._id, comment._id)
+                        }
+                        size="small"
+                        variant="contained"
+                        sx={{ mt: 1 }}
+                      >
+                        Save
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <p
+                        className="comment-text"
+                        dangerouslySetInnerHTML={{ __html: comment.comment }}
+                      />
+                      {user._id === comment.user._id && (
+                        <Button
+                          onClick={() =>
+                            handleEditComment(comment._id, comment.comment)
+                          }
+                          size="small"
+                          variant="text"
+                        >
+                          Edit
+                        </Button>
+                      )}
+                    </>
+                  )}
                 </div>
               </div>
             </div>
