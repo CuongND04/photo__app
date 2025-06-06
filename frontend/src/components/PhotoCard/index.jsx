@@ -4,6 +4,7 @@ import formatDate from "../../utils/formatDate";
 import fetchModel from "../../lib/fetchModelData";
 import imageMap from "../../utils/imageMap";
 import { Avatar, Button, TextField } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 import "./styles.css";
 import CommentInput from "../CommentInput";
 import { useAuth } from "../../contexts/AuthContext";
@@ -13,6 +14,9 @@ const PhotoCard = ({ photo, userId, toggle, setToggle }) => {
   const [userDetail, setUserDetail] = useState({});
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editText, setEditText] = useState("");
+
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(photo.likes?.length || 0);
 
   useEffect(() => {
     fetchModel(`/api/user/${userId}`)
@@ -24,6 +28,15 @@ const PhotoCard = ({ photo, userId, toggle, setToggle }) => {
     setEditingCommentId(commentId);
     setEditText(originalText);
   };
+  useEffect(() => {
+    if (photo.likes) {
+      setLiked(photo.likes.includes(user._id));
+      setLikeCount(photo.likes.length);
+    } else {
+      setLiked(false);
+      setLikeCount(0);
+    }
+  }, [photo, user._id]);
 
   const handleSaveComment = async (photoId, commentId) => {
     try {
@@ -49,7 +62,26 @@ const PhotoCard = ({ photo, userId, toggle, setToggle }) => {
       console.error(err);
     }
   };
-
+  const handleLike = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8081/api/photos/${photo._id}/like`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ user_id: user._id }),
+        }
+      );
+      const result = await response.json();
+      console.log("result: ", result);
+      setLiked(result.liked);
+      setLikeCount(result.totalLikes);
+    } catch (err) {
+      console.error("Like failed", err);
+    }
+  };
+  console.log("photo: ", photo);
   return (
     <div className="photo-card">
       <div className="photo-image-container">
@@ -72,6 +104,14 @@ const PhotoCard = ({ photo, userId, toggle, setToggle }) => {
               ? `${userDetail.first_name} ${userDetail.last_name}`
               : "Loading..."}
           </Link>
+        </div>
+        <div className="photo-like-container">
+          <IconButton onClick={handleLike} color={liked ? "error" : "default"}>
+            {liked ? "Thích" : "Không thích"}
+          </IconButton>
+          <span>
+            {likeCount} {likeCount === 1 ? "like" : "likes"}
+          </span>
         </div>
       </div>
 

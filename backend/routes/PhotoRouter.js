@@ -45,6 +45,7 @@ router.get("/photosOfUser/:id", async (req, res) => {
         file_name: photo.file_name,
         date_time: photo.date_time,
         comments: enrichedComments.filter((c) => c !== null),
+        likes: photo.likes || [],
       };
     });
     res.status(200).json(await Promise.all(result));
@@ -173,6 +174,34 @@ router.put("/comments/:photo_id/:comment_id", async (req, res) => {
       console.error(err);
       res.status(500).send("An unexpected error occurred.");
     }
+  }
+});
+
+// routes/photo.js
+router.put("/photos/:id/like", async (req, res) => {
+  try {
+    const userId = req.body.user_id; // user gửi lên
+    const photoId = req.params.id;
+
+    const photo = await Photo.findById(photoId);
+    if (!photo) return res.status(404).send("Photo not found");
+
+    const alreadyLiked = photo.likes.includes(userId);
+    if (alreadyLiked) {
+      // Unlike
+      photo.likes = photo.likes.filter((id) => id.toString() !== userId);
+    } else {
+      // Like
+      photo.likes.push(userId);
+    }
+
+    await photo.save();
+    res
+      .status(200)
+      .json({ liked: !alreadyLiked, totalLikes: photo.likes.length });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Failed to like photo");
   }
 });
 

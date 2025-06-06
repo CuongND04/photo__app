@@ -24,6 +24,7 @@ const photoSchema = new mongoose.Schema({
   user_id: mongoose.Schema.Types.ObjectId,
   // Array of comment objects representing the comments made on this photo.
   comments: [commentSchema],
+  likes: [mongoose.Schema.Types.ObjectId], // chứa danh sách user_id đã like ảnh
 });
 
 /**
