@@ -7,6 +7,7 @@ const isAuthenticated = require("./middlewares/auth.middleware.js");
 const UserRouter = require("./routes/UserRouter");
 const PhotoRouter = require("./routes/PhotoRouter");
 const AdminRouter = require("./routes/AdminRouter");
+const PostRouter = require("./routes/PostRouter");
 // const CommentRouter = require("./routes/CommentRouter");
 
 dbConnect();
@@ -23,6 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/admin", AdminRouter);
 app.use("/api/user", isAuthenticated, UserRouter);
+app.use("/api/post", isAuthenticated, PostRouter);
 app.use("/api", isAuthenticated, PhotoRouter);
 
 app.get("/", (request, response) => {

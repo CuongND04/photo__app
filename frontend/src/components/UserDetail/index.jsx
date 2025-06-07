@@ -67,6 +67,9 @@ function UserDetail() {
         <Link to={`/photos/${userId}`} className="user-detail-link">
           View all photos
         </Link>
+        <Link to={`/viewpost/${userId}`} className="user-detail-link">
+          View Posts
+        </Link>
       </div>
     </>
   );

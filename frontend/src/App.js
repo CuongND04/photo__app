@@ -13,6 +13,7 @@ import UserPhotos from "./components/UserPhotos";
 import UserComments from "./components/UserComments";
 import { useAuth } from "./contexts/AuthContext";
 import { Toaster } from "react-hot-toast";
+import ViewPost from "./components/ViewPost";
 
 const App = (props) => {
   const { page, user } = useAuth();
@@ -61,6 +62,14 @@ const App = (props) => {
                     element={
                       <ProtectedRoute>
                         <UserPhotos />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/viewpost/:userId"
+                    element={
+                      <ProtectedRoute>
+                        <ViewPost />
                       </ProtectedRoute>
                     }
                   />
