@@ -11,6 +11,11 @@ async function fetchModel(url) {
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
+  let i = 1;
+
+  const htt = {
+    1: "hai",
+  };
   const model = await response.json();
   return model;
 }
