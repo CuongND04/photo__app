@@ -130,6 +130,23 @@ function TopBar() {
                 </DialogActions>
               </form>
             </Dialog>
+
+            {/* <Dialog open={dialog} onClose={() => setDialog(false)}>
+              <form onSubmit={handleUpload}>
+                <DialogContent>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={(domFileRef) => {
+                      setUploadInput(domFileRef);
+                    }}
+                  />
+                </DialogContent>
+                <DialogActions>
+                  <Button type="submit">Submit</Button>
+                </DialogActions>
+              </form>
+            </Dialog> */}
           </>
         ) : (
           <Typography variant="h5" color="inherit">

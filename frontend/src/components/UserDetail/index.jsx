@@ -34,6 +34,17 @@ function UserDetail() {
             <p className="user-detail-occupation">{`${data.occupation}`}</p>
           </div>
         </div>
+        {/* <div className="user-detail-header">
+          <div className="user-detail-avatar">
+            <Avatar sx={{ bgcolor: "primary.light", width: 80, height: 80 }}>
+              {data.first_name}
+            </Avatar>
+          </div>
+          <div className="user-detail-info">
+            <h2 className="user-detail-title">{`${data.first_name} ${data.last_name}`}</h2>
+            <p className="user-detail-occupation">{`${data.occupation}`}</p>
+          </div>
+        </div> */}
 
         <div className="user-detail-details">
           <div className="user-detail-item">
