@@ -89,6 +89,18 @@ async function dbLoad() {
     } catch (error) {
       console.error("Error create photo", error);
     }
+
+    // try {
+    //   await photoObj.save();
+    //   console.log(
+    //     "Adding photo:",
+    //     photo.file_name,
+    //     " of user ID ",
+    //     photoObj.user_id
+    //   );
+    // } catch (error) {
+    //   console.error("Error create photo", error);
+    // }
   }
   const postData = [
     {
