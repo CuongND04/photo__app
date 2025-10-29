@@ -14,7 +14,7 @@ const PhotoCard = ({ photo, userId, toggle, setToggle }) => {
   const [userDetail, setUserDetail] = useState({});
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editText, setEditText] = useState("");
-
+  const yy = 123;
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(photo.likes?.length || 0);
 
